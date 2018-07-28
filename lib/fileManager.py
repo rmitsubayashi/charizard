@@ -6,9 +6,9 @@ y = 1
 def getPageNumber(xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "pageNumberX.txt"
+        fileName = "data/pageNumberX.txt"
     elif xOrY == y:
-        fileName = "pageNumberY.txt"
+        fileName = "data/pageNumberY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -19,31 +19,31 @@ def getPageNumber(xOrY) :
 def savePageNumber(num, xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "pageNumberX.txt"
+        fileName = "data/pageNumberX.txt"
     elif xOrY == y:
-        fileName = "pageNumberY.txt"
+        fileName = "data/pageNumberY.txt"
     with open(fileName, "w") as file :
         file.write(num)
         
 def getPokemonCache() :
     pokemonCache = {}
-    with open("pokemonCache.txt","r") as file :
+    with open("data/pokemonCache.txt","r") as file :
         for line in file :
             keyVal = line.split(":")
             pokemonCache[keyVal[0]] = int(keyVal[1])
     return pokemonCache
     
 def addPokemonToCache(image, id) :
-    with open("pokemonCache.txt","a") as file :
+    with open("data/pokemonCache.txt","a") as file :
         line = image + ":" + str(id) + "\n"
         file.write(line)
 
 def getRawParties(xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "rawPartiesX.txt"
+        fileName = "data/rawPartiesX.txt"
     elif xOrY == y:
-        fileName = "rawPartiesY.txt"
+        fileName = "data/rawPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -66,9 +66,9 @@ def getRawParties(xOrY) :
 def getSemiNormalizedParties(xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "semiNormalizedPartiesX.txt"
+        fileName = "data/semiNormalizedPartiesX.txt"
     elif xOrY == y:
-        fileName = "semiNormalizedPartiesY.txt"
+        fileName = "data/semiNormalizedPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -91,9 +91,9 @@ def getSemiNormalizedParties(xOrY) :
 def getNormalizedParties(xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "normalizedPartiesX.txt"
+        fileName = "data/normalizedPartiesX.txt"
     elif xOrY == y:
-        fileName = "normalizedPartiesY.txt"
+        fileName = "data/normalizedPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -116,9 +116,9 @@ def getNormalizedParties(xOrY) :
 def addRawParty(pokemonIDs, xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "rawPartiesX.txt"
+        fileName = "data/rawPartiesX.txt"
     elif xOrY == y:
-        fileName = "rawPpartiesY.txt"
+        fileName = "data/rawPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -134,9 +134,9 @@ def addRawParty(pokemonIDs, xOrY) :
 def addSemiNormalizedParty(pokemonIDs, xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "semiNormalizedPartiesX.txt"
+        fileName = "data/semiNormalizedPartiesX.txt"
     elif xOrY == y:
-        fileName = "semiNormalizedPartiesY.txt"
+        fileName = "data/semiNormalizedPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -152,9 +152,9 @@ def addSemiNormalizedParty(pokemonIDs, xOrY) :
 def addNormalizedParty(pokemonIDs, xOrY) :
     fileName = ""
     if xOrY == x:
-        fileName = "normalizedPartiesX.txt"
+        fileName = "data/normalizedPartiesX.txt"
     elif xOrY == y:
-        fileName = "normalizedPartiesY.txt"
+        fileName = "data/normalizedPartiesY.txt"
     else :
         print("page number xOrY invalid")
         return
@@ -172,9 +172,9 @@ def addNormalizedParty(pokemonIDs, xOrY) :
 def savePokemonTypes(xOrY) :
     outputFileName = ""
     if xOrY == x :
-        outputFileName = "pokemonTypesX.txt"
+        outputFileName = "data/pokemonTypesX.txt"
     if xOrY == y :
-        outputFileName = "pokemonTypesY.txt"
+        outputFileName = "data/pokemonTypesY.txt"
     inputFileName = getFileName(xOrY)
     with open(inputFileName, "r") as inputFile, open(outputFileName, "w") as outputFile :
         pokedex = Pokedex()
@@ -186,7 +186,7 @@ def savePokemonTypes(xOrY) :
                 idsInt = []
                 for idStr in ids :
                     id = int(idStr)
-                    types = poekdex.getType(id)
+                    types = pokedex.getType(id)
                     types = sorted(types)
                     line = ""
                     for type in types :
@@ -199,7 +199,7 @@ def savePokemonTypes(xOrY) :
             
 def getIDMap() :
     idMap = dict()
-    with open("idMap.txt","r") as file :
+    with open("data/idMap.txt","r") as file :
         for line in file:
             keyVal = line.split(",")
             key = int(keyVal[0])
@@ -208,7 +208,7 @@ def getIDMap() :
     return idMap            
 
 def saveIDMap(idMap) :
-    with open("idMap.txt","w") as file :
+    with open("data/idMap.txt","w") as file :
         for key, val in idMap.items():
             file.write(str(val)+","+str(key)+"\n"  )  
 

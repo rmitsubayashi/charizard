@@ -3,19 +3,24 @@ import csv
 class Pokedex :
     pokedex = {}
     pokedexByID = {}
-    types = {}
+    pokemonTypes = {}
+    typeNames = {}
     
     def __init__(self):
-        with open("pokedex.csv", newline="") as file :
+        with open("data/pokedex.csv", newline="") as file :
             reader = csv.DictReader(file)
             for row in reader :
                 self.pokedex[row['identifier']] = int(row['species_id'])
                 self.pokedexByID[int(row['species_id'])] = row['identifier']
-        with open("types.csv", newline="") as file :
+        with open("data/types.csv", newline="") as file :
             reader = csv.DictReader(file)
             for row in reader :
-                self.types.setdefault(int(row['pokemon_id']),set())
-                self.types[int(row['pokemon_id'])].add(int(row['type_id']))
+                self.pokemonTypes.setdefault(int(row['pokemon_id']),set())
+                self.pokemonTypes[int(row['pokemon_id'])].add(int(row['type_id']))
+        with open("data/typeNames.csv",newline="") as file :
+            reader = csv.DictReader(file)
+            for row in reader :
+                self.typeNames[int(row['type_id'])] = row['name']
         
     def convert(self, pokemonName, imageURL) :
         searchPokemonName = self.convertPGLExceptions(imageURL)
@@ -24,7 +29,19 @@ class Pokedex :
         return self.pokedex[searchPokemonName]
         
     def getType(self, pokemonID) :
-        return self.types[pokemonID]
+        return self.pokemonTypes[pokemonID]
+    
+    def getTypeName(self, typeID) :
+        return self.typeNames[typeID]
+        
+    def getAllTypeNames(self) :
+        types = []
+        for i in range(18) :
+            types.append("")
+        for key, val in self.typeNames.items() :
+            types[key-1] = val
+            
+        return types
         
     def getName(self, pokemonID) :
         return self.pokedexByID[pokemonID]
