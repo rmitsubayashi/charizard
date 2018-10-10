@@ -5,155 +5,149 @@ from skimage import data, transform
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 import os
-
-def cnn_model_fn(features, labels, mode):
-    input_layer = tf.reshape(features["x"],[-1, 5, 1])
-    conv1 = tf.layers.conv1d(
-        inputs=input_layer,
-        filters=5,
-        kernel_size=5,
-        padding="same",
-        activation=tf.nn.relu)
-        
-    pool1 = tf.layers.max_pooling1d(
-        inputs=conv1,
-        pool_size=2,
-        strides=2)
-        
-    #kernel size = [5,5]
-    conv2 = tf.layers.conv2d(
-        inputs=pool1,
-        filters=25,
-        kernel_size=5,
-        padding="same",
-        activation=tf.nn.relu)
-        
-    pool2 = tf.layers.max_pooling1d(
-        inputs=conv2,
-        pool_size=2,
-        strides=2)
-        
-    dense = tf.layers.dense(
-        inputs=pool2_flat, 
-        units=1024,
-        activation=tf.nn.relu)
-    dropout = tf.layers.dropout(
-        inputs=dense,
-        rate=0.4,
-        training=mode == tf.estimator.ModeKeys.TRAIN)
-        
-    logits = tf.layers.dense(
-        inputs=dropout,
-        units=10)
-        
-    predictions = {
-        "classes": tf.argmax(input=logits, axis=1),
-        "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
-    }
-    
-    if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode-mode, predictions=predictions)
-    
-    loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-    
-    if mode == tf.estimator.ModeKeys.TRAIN:
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
-        train_op = optimizer.minimize(
-            loss=loss,
-            global_step=tf.train.get_global_step())
-        return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
-    
-    eval_metric_ops = {
-        "accuracy": tf.metrics.accuracy(
-            labels=labels,
-            predictions=predictions["classes"])}
-    return tf.estimator.EstimatorSpec(
-        mode=mode,
-        loss=loss,
-        eval_metric_ops=eval_metric_ops)
+from google.colab import files
 
     
 def read_parties():
-    ROOT_PATH = "C://Users/ryomi/Desktop/machine_learning/pattern_recognition/charizard"   
-    x_file_name = ROOT_PATH + "/formattedPartiesX.txt"
-    y_file_name = ROOT_PATH + "/formattedPartiesY.txt"
+    x_file_name = "normalizedPartiesX.txt"
+    y_file_name = "normalizedPartiesY.txt"
+    x_type_file_name = "pokemonTypesX.txt"
+    y_type_file_name = "pokemonTypesY.txt"
     
     test_labels = []
     test_parties = []
+    test_types = []
     training_labels = []
     training_parties = []
+    training_types = []
     
     i=0
-    with open(x_file_name, "r") as file:
+    with open(x_file_name, "r") as file, open(x_type_file_name, "r") as typeFile:
         for line in file :
             if line.endswith(",") :
                 line = line[:-1]
             ids = line.split(",")
-            idsFloat = []
+            idsInt = []
+            typesInt = []
             for idStr in ids :
                 #convert to int so we can sort
                 id = int(idStr)
-                idsFloat.append(idStr)
+                idsInt.append(id)
+                typeLine = typeFile.readline()
+                types = typeLine.split(",")
+                typesInt = []
+                typesInt.append(int(types[0]))
+                if len(types) == 1 :
+                    typesInt.append(0)
+                else :
+                    typesInt.append(int(types[1]))
+                
                     
-            if i%5==0 :
-                test_parties.append(idsFloat)
+            if i%5==1 :
+                test_parties.append(idsInt)
+                test_types.append(typesInt)
                 test_labels.append(0)
             else :
-                training_parties.append(idsFloat)
+                training_parties.append(idsInt)
+                training_types.append(typesInt)
                 training_labels.append(0)
             i += 1
     
-    with open(y_file_name, "r") as file:
+    
+    with open(y_file_name, "r") as file, open(y_type_file_name, "r") as typeFile:
         for line in file :
             if line.endswith(",") :
                 line = line[:-1]
             ids = line.split(",")
-            idsFloat = []
+            idsInt = []
+            typesInt = []
             for idStr in ids :
                 #convert to int so we can sort
                 id = int(idStr)
-                idsFloat.append(idStr)
-                    
-            if i%5==0 :
-                test_parties.append(idsFloat)
+                idsInt.append(id)
+                typeLine = typeFile.readline()
+                types = typeLine.split(",")
+                typesInt = []
+                typesInt.append(int(types[0]))
+                if len(types) == 1 :
+                    typesInt.append(0)
+                else :
+                    typesInt.append(int(types[1]))
+            
+            if i%5==1 :
+                test_parties.append(idsInt)
+                test_types.append(typesInt)
                 test_labels.append(1)
             else :
-                training_parties.append(idsFloat)
+                training_parties.append(idsInt)
+                training_types.append(typesInt)
                 training_labels.append(1)
             i += 1
         
-    print(str(i))
-    return training_parties, training_labels, test_parties, test_labels
+    return training_parties, training_types, training_labels, test_parties, test_types, test_labels
  
 def main(unused_argv):
-    training_parties, training_labels, test_parties, test_labels = read_parties()
+    #normalizedParties
+    print("normalizedPartiesX")
+    try: 
+      os.remove("normalizedPartiesX.txt")
+    except OSError:
+      pass
+    files.upload()
+    print("normalizedPartiesY")
+    try:
+      os.remove("normalizedPartiesY.txt")
+    except OSError:
+      pass
+    files.upload()
+    #types
+    print("pokemonTypesX")
+    try:
+      os.remove("pokemonTypesX.txt")
+    except OSError:
+      pass
+    files.upload()
+    print("pokemonTypesY")
+    try:
+      os.remove("pokemonTypesY.txt")
+    except OSError:
+      pass
+    files.upload()
+    training_parties, training_types, training_labels, test_parties, test_types, test_labels = read_parties()
     training_labels = np.array(training_labels)
     test_labels = np.array(test_labels)
     training_parties = np.array(training_parties)
     test_parties = np.array(test_parties)
+    test_types = np.array(test_types)
+    training_types = np.array(training_types)
     
-    feature_columns = [tf.feature_column.numeric_column("x", shape=[5])]
+    
+    ids = tf.feature_column.categorical_column_with_identity(
+      'ids', 387)
+    types = tf.feature_column.categorical_column_with_identity(
+      'types', 19)
+    feature_columns = [tf.feature_column.indicator_column(ids),
+                       tf.feature_column.indicator_column(types)]
     classifier = tf.estimator.DNNClassifier(
         feature_columns=feature_columns,
-        hidden_units=[368,20,20],
+        hidden_units=[100,20],
         optimizer=tf.train.AdamOptimizer(1e-4),
         n_classes=2,
-        dropout=0.1,
-        model_dir="./tmp/charizard_model"
+        dropout=0.1
     )
     
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": training_parties},
+        x={"ids": training_parties, "types": training_types},
         y=training_labels,
         num_epochs=None,
         batch_size=50,
         shuffle=True
     )
     
-    classifier.train(input_fn=train_input_fn, steps=100000)
+    classifier.train(input_fn=train_input_fn, steps=5000)
         
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x":test_parties},
+        x={"ids":test_parties, "types": test_types},
         y=test_labels,
         num_epochs=1,
         shuffle=False)

@@ -7,27 +7,39 @@ import pandas
 x = 0
 y = 1
 
+def compareDistribution2() :
+    sortedTallyX, tallyX, totalX = tallyPokemonCt(x)
+    sortedTallyY, tallyY, totalY = tallyPokemonCt(y)
+    
+    for pokemonID, tally in sortedTallyX:
+        print(str(pokemonID) + ":" + str(tally))
+
 def compareDistribution() :
     sortedTallyX, tallyX, totalX = tallyPokemonCt(x)
     sortedTallyY, tallyY, totalY = tallyPokemonCt(y)
     
-    comparisonColumnLabels = ["X","Y", "Diff"]
+    comparisonColumnLabels = ["X","Y", "Diff", "Weighted"]
     comparisonRowLabels = []
     comparisonData = []
     
     pokedex = Pokedex()
     for pokemonID, tally in sortedTallyX :
         comparisonRowLabels.append(pokedex.getName(pokemonID))
-        percentageX = 100 * tally / totalX
+        percentageX = round(100 * tally / totalX, 2)
         if pokemonID not in tallyY :
-            comparisonData.append([percentageX, "n/a", "n/a"])
+            comparisonData.append([percentageX, "n/a", "n/a", "n/a"])
         else :
-            comparisonData.append([percentageX, 100 * tallyY[pokemonID] / totalY, abs(percentageX - 100 * tallyY[pokemonID] / totalY) ])
+            percentageY = round(100 * tallyY[pokemonID] / totalY, 2)
+            diff = round(abs(percentageX - 100 * tallyY[pokemonID] / totalY), 2)
+            minXY = min(percentageX, percentageY)
+            weightedDiff = round(100*diff/minXY, 2)
+            comparisonData.append([percentageX, percentageY, diff, weightedDiff ])
             del tallyY[pokemonID]
     
     sortedTallyY = sorted(tallyY.items(), key=operator.itemgetter(1), reverse=True)
     for key, val in sortedTallyY:
-        comparisonData.append(["n/a",100 * val / totalY,"n/a"])
+        percentageY = round(100 * val / totalY, 2)
+        comparisonData.append(["n/a",percentageY,"n/a","n/a"])
         comparisonRowLabels.append(pokedex.getName(key))
     
     #without setting the max rows, we can't display all rows
@@ -154,4 +166,4 @@ def printAllGeneralData() :
     print("-----------")
     printGeneralData(y)
     
-compareTypeDistribution()
+#compareTypeDistribution()

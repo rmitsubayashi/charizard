@@ -1,4 +1,4 @@
-
+from lib.pokedex import Pokedex
 
 x = 0
 y = 1
@@ -149,6 +149,12 @@ def addSemiNormalizedParty(pokemonIDs, xOrY) :
         file.write(line)
         file.write("\n")
         
+def clearSemiNormalizedParties() :
+    with open("data/semiNormalizedPartiesX.txt", "w") as file :
+        file.write("")
+    with open("data/semiNormalizedPartiesY.txt", "w") as file :
+        file.write("")
+        
 def addNormalizedParty(pokemonIDs, xOrY) :
     fileName = ""
     if xOrY == x:
@@ -167,6 +173,12 @@ def addNormalizedParty(pokemonIDs, xOrY) :
         file.write(line)
         file.write("\n")
         
+def clearNormalizedParties() :
+    with open("data/normalizedPartiesX.txt", "w") as file :
+        file.write("")
+    with open("data/normalizedPartiesY.txt", "w") as file :
+        file.write("")
+        
 #lists the pokemon types in order.
 #make sure we've already reordered the pokemon IDs before doing this
 def savePokemonTypes(xOrY) :
@@ -175,27 +187,32 @@ def savePokemonTypes(xOrY) :
         outputFileName = "data/pokemonTypesX.txt"
     if xOrY == y :
         outputFileName = "data/pokemonTypesY.txt"
-    inputFileName = getFileName(xOrY)
-    with open(inputFileName, "r") as inputFile, open(outputFileName, "w") as outputFile :
-        pokedex = Pokedex()
-        for line in inputFile :
-            #remove last comma
-                if line.endswith(",") :
-                    line = line[:-1]
-                ids = line.split(",")
-                idsInt = []
-                for idStr in ids :
-                    id = int(idStr)
-                    types = pokedex.getType(id)
-                    types = sorted(types)
-                    line = ""
-                    for type in types :
-                        line = line + str(type) + ","
-                    #remove last comma
-                    line = line[:-1]
-                    outputFile.write(line)
-                    outputFile.write("\n")
-            
+    inputFile = getNormalizedParties(xOrY)
+    idMap = getIDMap()
+    pokedex = Pokedex()
+    for party in inputFile :
+        for id in party :
+            types = pokedex.getType(idMap.get(id))
+            addPokemonType(types, xOrY)
+                    
+
+def addPokemonType(types, xOrY) :
+    fileName = ""
+    if xOrY == x:
+        fileName = "data/pokemonTypesX.txt"
+    elif xOrY == y:
+        fileName = "data/pokemonTypesY.txt"
+    else :
+        print("page number xOrY invalid")
+        return
+    with open(fileName, "a") as file :
+        line = ""
+        for type in types :
+            line = line + str(type) + ","
+        #remove last comma
+        line = line[:-1]
+        file.write(line)
+        file.write("\n")            
             
 def getIDMap() :
     idMap = dict()

@@ -7,9 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 import time
 
-from pokedex import Pokedex
-from normalizer import Normalizer
-import fileManager
+from lib.pokedex import Pokedex
+import lib.fileManager as fileManager
 
 x = 0
 y = 1

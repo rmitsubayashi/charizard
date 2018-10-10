@@ -1,12 +1,14 @@
-import fileManager
+import lib.fileManager as fileManager
 
 class Normalizer :
     x = 0
     y = 1
-        
     
     #we need to normalize both x and y at the same time
     def normalizeParties(self) :
+        fileManager.clearNormalizedParties()
+        fileManager.clearSemiNormalizedParties()
+        
         partiesX = fileManager.getRawParties(self.x)
         partiesY = fileManager.getRawParties(self.y)
 

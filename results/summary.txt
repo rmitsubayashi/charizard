@@ -1,0 +1,6 @@
+tweaked just parties: 68%
+just parties: 58%
+
+parties + types: 82~85% (~90% precision ~80% recall)
+
+types: 85~86% (~100% precision ~75% recall)
