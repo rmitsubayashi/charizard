@@ -166,4 +166,4 @@ def printAllGeneralData() :
     print("-----------")
     printGeneralData(y)
     
-#compareTypeDistribution()
+compareDistribution()
