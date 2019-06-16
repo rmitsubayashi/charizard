@@ -14,8 +14,10 @@
 
 本題のリザードンは、リザードンXとリザードンYにメガシンカできるポケモンです。
 ![リザードンX](/img/charizard_x.png)
+
 リザードンX
 ![リザードンY](/img/charizard_y.png)
+
 リザードンY
 
 引用：https://www.pokemon.jp/zukan/
