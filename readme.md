@@ -16,6 +16,7 @@
 ![リザードンX](/img/charizard_x.png)
 
 リザードンX
+
 ![リザードンY](/img/charizard_y.png)
 
 リザードンY
